@@ -1,0 +1,14 @@
+[Unit]
+Description=Blind Navigate Service
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/bin/bash -c 'source /home/pi/myenv/bin/activate && /usr/bin/python3 /path/to/your/python_script.py'
+Restart=on-abort
+User=pi
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/home/pi/.Xauthority
+
+[Install]
+WantedBy=multi-user.target

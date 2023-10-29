@@ -1,0 +1,12 @@
+# Install systemd startup Service
+
+place auto_start.service in /etc/systemd/system/
+
+sudo systemctl daemon-reload
+sudo systemctl enable auto_start.service
+
+#chech the status of running service
+sudo systemctl status auto_start.service
+
+#restart service after any python code or error
+sudo systemctl restart auto_start.service

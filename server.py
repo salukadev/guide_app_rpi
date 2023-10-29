@@ -91,11 +91,11 @@ def display_output():
         if not frame_queue.full():
             frame_queue.put(frame)
 
-        if latest_frame is not None:
-            cv2.imshow("Output", latest_frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-        time.sleep(0.06)
+        # if latest_frame is not None:
+        #     cv2.imshow("Output", latest_frame)
+        #     if cv2.waitKey(1) & 0xFF == ord('q'):
+        #         break
+        time.sleep(0.04)
     cap.release()            
     cv2.destroyAllWindows()
 
@@ -132,7 +132,7 @@ def video_feed():
                 else:
                     frame_lock.release()
             else:
-                time.sleep(0.08)  # If we couldn't get the lock, wait a bit before trying again
+                time.sleep(0.04)  # If we couldn't get the lock, wait a bit before trying again
     return Response(generate(), content_type='multipart/x-mixed-replace; boundary=frame')
 
 

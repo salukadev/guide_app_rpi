@@ -10,9 +10,9 @@ import threading
 app = Flask(__name__)
 
 
-#cap = cv2.VideoCapture(0)
-cap  = cv2.VideoCapture('sample_vids/chair_right.mp4')
-frame_queue = queue.Queue()
+cap = cv2.VideoCapture(0)
+#cap  = cv2.VideoCapture('sample_vids/chair_right.mp4')
+frame_queue = queue.Queue(maxsize=10)
 
 # Load MobileNet SSD model
 net = cv2.dnn.readNetFromCaffe('MobileNetSSD_deploy.prototxt', 'MobileNetSSD_deploy.caffemodel')
@@ -83,17 +83,20 @@ def display_output():
         ret, frame = cap.read()
         
         # Check if the video has ended
-        if not ret:
-            cap.set(cv2.CAP_PROP_POS_FRAMES, 0)  # Reset video to the beginning
-            continue  # Skip the rest of the loop and start from the beginning
+        # if not ret:
+        #     cap.set(cv2.CAP_PROP_POS_FRAMES, 0)  # Reset video to the beginning
+        #     continue  # Skip the rest of the loop and start from the beginning
 
-        frame_queue.put(frame)
+        # frame_queue.put(frame)
+        if not frame_queue.full():
+            frame_queue.put(frame)
 
         if latest_frame is not None:
             cv2.imshow("Output", latest_frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
-
+        time.sleep(0.06)
+    cap.release()            
     cv2.destroyAllWindows()
 
 # @app.route('/video_feed')
@@ -129,7 +132,7 @@ def video_feed():
                 else:
                     frame_lock.release()
             else:
-                time.sleep(0.05)  # If we couldn't get the lock, wait a bit before trying again
+                time.sleep(0.08)  # If we couldn't get the lock, wait a bit before trying again
     return Response(generate(), content_type='multipart/x-mixed-replace; boundary=frame')
 
 
